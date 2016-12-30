@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+    <style type="text/css">
+        body, html {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            font-family: "微软雅黑";
+        }
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=yaDRGoon5YoRzAAwH781yUgn"></script>
+
+    <link href="http://api.map.baidu.com/library/TrafficControl/1.4/src/TrafficControl_min.css" rel="stylesheet"
+          type="text/css"/>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="css/style.css"/>
+    <script type="text/javascript" src="js/angular/angular.min.js"></script>
+    <!--jQuery-->
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <!--jQuery动画暂停插件-->
+    <script type="text/javascript" src="js/jquery.pause.min.js"></script>
+    <!--滚动效果js-->
+    <script type="text/javascript" src="http://api.map.baidu.com/library/LuShu/1.2/src/LuShu_min.js"></script>
+    <script type="text/javascript" src="js/jquery.vticker.min.js"></script>
+    <title>监管服务部门管理界面</title>
+</head>
+<body ng-app="governmentAdminApp" ng-controller="governmentAdminCtrl">
+<div class="container" style="width: 100%">
+
+
+    <div class="row">
+        <h3 style="margin-left: 10px; margin-left: 20px">高速公路欺诈风险识别典型应用（监管服务部门管理界面）</h3>
+    </div>
+    <!--系统基本信息-->
+    <div class="row">
+        <h4 style="float: left; margin-left: 20px">监控面板</h4>
+        <h4 ng-if="carNo != null" style="float: right; margin-right: 20px;">当前车辆：{{carNo}}</h4>
+    </div>
+
+
+    <!--监控面板-->
+    <div class="col-lg-6 col-md-6" style="margin: auto;">
+        <!--车辆逃费监控信息-->
+        <div class="panel panel-box">
+            <div style="height: 250px; border: solid; border-width: 1px; text-align: center">
+                <table class="table table-striped" style="margin: auto; width: 100%;">
+                    <tbody>
+                    <tr>
+                        <td height="21" width="12%">车牌号</td>
+                        <td height="21" width="12%">车辆类型</td>
+                        <td height="21" width="20%">操作</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table class="table table-striped" cellspacing="0" style="margin: auto; width: 100%; height: 80%">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div style="overflow-y:auto; height:195px; position: relative">
+                                <div align="center">
+                                    <table class="table table-striped" style="margin: auto; width: 100%; height: 80%">
+                                        <tbody>
+                                        <tr ng-repeat="carInfo in basicCarInfos | orderBy: 'carNo':true" style="position: relative">
+
+                                            <td width="30%">{{carInfo.carNo}}</td>
+                                            <td width="30%">{{carInfo.exVehicleFlag}}</td>
+                                            <td><a ng-click="showDetails(carInfo.carNo)">展示轨迹与查看详情</a></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <!--地图显示-->
+    <div class="col-lg-6 col-md-6 col-xs-12" style="margin: auto; float: right;">
+
+        <div class="panel panel-box">
+            <div class="baidu-maps" id="allmap" style="height: 800px;border: solid; border-width: 1px;"></div>
+        </div>
+
+    </div>
+
+
+    <!--高速收费流水详情-->
+    <div class="col-lg-6 col-md-6" style="margin: auto;">
+        <!--车辆逃费监控信息-->
+        <div class="panel panel-box">
+            <div style="height: 270px; border: solid; border-width: 1px; text-align: center">
+                <table class="table table-striped" style="margin: auto; width: 100%;">
+                    <tbody>
+                    <tr>
+                        <td height="21" width="5%">收费分段</td>
+                        <td height="21" width="6%">入口收费站</td>
+                        <td height="21" width="6%">出口收费站</td>
+                        <td height="21" width="8%">入口时间</td>
+                        <td height="21" width="8%">出口时间</td>
+                        <td height="21" width="8%">收费里程</td>
+                        <td height="21" width="8%">行驶时间</td>
+                        <td height="21" width="8%">平均行驶速度</td>
+                        <td height="21" width="8%">行驶经过路段</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table class="table table-striped" cellspacing="0" style="margin: auto; width: 100%; height: 80%">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div style="overflow-y:auto; height:195px; position: relative">
+                                <div align="center">
+                                    <table class="table table-striped" style="margin: auto; width: 100%; height: 80%">
+                                        <tbody>
+                                        <tr ng-repeat="chargeData in chargeDatas | orderBy: 'enTime':false" style="position: relative">
+                                            <td width="5%">{{chargeData.segment}}</td>
+                                            <td width="6%">{{chargeData.enStationName}}</td>
+                                            <td width="6%">{{chargeData.exStationName}}</td>
+                                            <td width="8%">{{chargeData.enTime}}</td>
+                                            <td width="8%">{{chargeData.exTime}}</td>
+                                            <td width="8%">{{chargeData.chargeMiles / 1000 | number:3}}公里</td>
+                                            <td width="8%">{{chargeData.timeDrive | number:2}}分</td>
+                                            <td width="8%">{{chargeData.averageSpeed | number:2}}千米/小时</td>
+                                            <td width="8%">{{chargeData.roadPassed}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!--行驶轨迹详情-->
+    <div class="col-lg-6 col-md-6" style="margin: auto;">
+        <!--车辆逃费监控信息-->
+        <div class="panel panel-box">
+            <div style="height: 250px; border: solid; border-width: 1px; text-align: center">
+                <table class="table table-striped" style="margin: auto; width: 100%;">
+                    <tbody>
+                    <tr>
+                        <td height="21" width="12%">轨迹分段</td>
+                        <td height="21" width="12%">时间</td>
+                        <td height="21" width="12%">经纬度</td>
+                        <td height="21" width="12%">地址解析</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table class="table table-striped" cellspacing="0" style="margin: auto; width: 100%; height: 80%">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div style="overflow-y:auto; height:195px; position: relative">
+                                <div align="center">
+                                    <table class="table table-striped" style="margin: auto; width: 100%; height: 80%">
+                                        <tbody>
+                                        <tr ng-repeat="dirvingRouteData in drivingRouteDatas | orderBy: 'time':false track by $index" style="position: relative">
+                                            <td width="12%">{{dirvingRouteData.segment}}</td>
+                                            <td width="12%">{{dirvingRouteData.time}}</td>
+                                            <td width="12%">{{dirvingRouteData.lng +", " + dirvingRouteData.lat}}</td>
+                                            <td width="12%">{{dirvingRouteData.location}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+</div>
+</body>
+</html>
+<script src="js/baseUrl.js"></script>
+<script src="js/government_admin.js"></script>

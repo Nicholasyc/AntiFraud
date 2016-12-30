@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style type="text/css">
+        body, html {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            font-family: "微软雅黑";
+        }
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=yaDRGoon5YoRzAAwH781yUgn"></script>
+
+    <link href="http://api.map.baidu.com/library/TrafficControl/1.4/src/TrafficControl_min.css" rel="stylesheet"
+          type="text/css"/>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="css/style.css"/>
+    <link type="text/css" rel="stylesheet" href="css/jquery.dataTables.min.css"/>
+    <script type="text/javascript" src="js/angular/angular.min.js"></script>
+    <!--jQuery-->
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
+    <!-- ECharts单文件引入 -->
+    <script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+
+    <title>高速路逃费稽核典型应用(业主管理界面)</title>
+</head>
+<body ng-app="statisticApp" ng-controller="statisticCtrl">
+<div class="container" style="width: 100%;">
+
+    <div class="row">
+        <h3 style="margin-left: 10px; margin-left: 20px">高速路逃费稽核典型应用(业主管理界面)</h3>
+    </div>
+    <!--系统基本信息-->
+    <div class="row">
+        <h4 style="float: right; margin-right: 20px;">当前时间：{{datetime|date : 'yyyy-MM-dd hh:mm:ss'}}</h4>
+    </div>
+
+    <!--当前状况展示区域-->
+    <div class="row">
+        <div class="row">
+            <h4 style="float: left; margin-left: 20px;">当前状况展示区域</h4>
+        </div>
+        <!-- Stats -->
+        <div class="col-lg-4 col-sm-5">
+            <div class="panel panel-box">
+                <div class="row" style="margin-left: 10px; height: 20px; padding-top: 5px">
+                    近一个月挽回逃费损失
+                </div>
+                <div class="row" style="margin-left: 20px; text-align: center; height: 80px">
+                    <h1>{{saveMoney.money|number:2}}元</h1>
+                </div>
+                <div class="row" style="margin-left: 20px; height: 100px;">
+                    <div class="row" style="height: 60px; padding-top: 20px">
+                        <span style="float: left; margin-left: 20px"><font
+                                size="5">{{saveMoney.huanbi|number:2}}%</font></span>
+                        <span style="float: right; margin-right: 50px"><font
+                                size="5">{{saveMoney.tongbi|number:2}}%</font></span>
+                    </div>
+                    <div class="row" style="height: 40px; padding: 5px">
+                        <span style="float: left; margin-left: 20px"><font size="3">环比</font></span>
+                        <span style="float: right; margin-right: 50px"><font size="3">同比</font></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-sm-5">
+            <div class="panel panel-box">
+                <div class="row" style="margin-left: 10px; height: 20px; padding-top: 5px">
+                    近一个月打击逃费次数
+                </div>
+                <div class="row" style="margin-left: 20px; text-align: center; height: 80px">
+                    <h1>{{findTollTimes.times}}次</h1>
+                </div>
+                <div class="row" style="margin-left: 20px; height: 100px;">
+                    <div class="row" style="height: 60px; padding-top: 20px">
+                        <span style="float: left; margin-left: 20px"><font
+                                size="5">{{findTollTimes.huanbi|number:2}}%</font></span>
+                        <span style="float: right; margin-right: 50px"><font
+                                size="5">{{findTollTimes.tongbi|number:2}}%</font></span>
+                    </div>
+                    <div class="row" style="height: 40px; padding: 5px">
+                        <span style="float: left; margin-left: 20px"><font size="3">环比</font></span>
+                        <span style="float: right; margin-right: 50px"><font size="3">同比</font></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-sm-5">
+            <div class="panel panel-box">
+                <div class="row" style="margin-left: 10px; height: 20px; padding-top: 5px">
+                    近一个月打逃平均每笔挽回损失
+                </div>
+                <div class="row" style="margin-left: 20px; text-align: center; height: 80px">
+                    <h1>{{averageMoney.averageMoney|number:2}}元</h1>
+                </div>
+                <div class="row" style="margin-left: 20px; height: 100px;">
+                    <div class="row" style="height: 60px; padding-top: 20px">
+                        <span style="float: left; margin-left: 20px"><font
+                                size="5">{{averageMoney.huanbi|number:2}}%</font></span>
+                        <span style="float: right; margin-right: 50px"><font
+                                size="5">{{averageMoney.tongbi|number:2}}%</font></span>
+                    </div>
+                    <div class="row" style="height: 40px; padding: 5px">
+                        <span style="float: left; margin-left: 20px"><font size="3">环比</font></span>
+                        <span style="float: right; margin-right: 50px"><font size="3">同比</font></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end stats -->
+    </div>
+
+    <!--图表区域-->
+    <div class="row" style="margin: auto">
+        <div class="row">
+            <h4 style="float: left; margin-left: 20px;">历史走势展示区域</h4>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 col-sm-5">
+                <div class="panel panel-box">
+                    <div id="echarts1" style="width: 400px; height: 200px"></div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-5">
+                <div class="panel panel-box">
+                    <div id="echarts2" style="width: 400px; height: 200px"></div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-5">
+                <div class="panel panel-box">
+                    <div id="echarts3" style="width: 400px; height: 200px"></div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-5">
+                <div class="panel panel-box">
+                    <div id="echarts4" style="width: 400px; height: 200px"></div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-5">
+                <div class="panel panel-box">
+                    <div id="echarts5" style="width: 400px; height: 200px"></div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-5">
+                <div class="panel panel-box">
+                    <div id="echarts6" style="width: 400px; height: 200px"></div>
+                </div>
+            </div>
+
+            <!--<div id="echarts1" style="height: 200px; width: 400px; display: inline-block"></div>-->
+            <!--<div id="echarts2" style="height: 200px; width: 400px; display: inline-block"></div>-->
+            <!--<div id="echarts3" style="height: 200px; width: 400px; display: inline-block"></div>-->
+            <!--<div id="echarts4" style="height: 200px; width: 400px; display: inline-block"></div>-->
+            <!--<div id="echarts5" style="height: 200px; width: 400px; display: inline-block"></div>-->
+            <!--<div id="echarts6" style="height: 200px; width: 400px; display: inline-block"></div>-->
+        </div>
+    </div>
+
+    <!--分收费站数据区域-->
+    <div class="row" style="margin: auto;">
+        <div class="row">
+            <h4 style="float: left; margin-left: 20px; display: inline-block">分收费站考核区域</h4>
+        </div>
+        <div class="row" style="text-align: right; margin-bottom: 10px">
+            <span style="height: 19px; line-height: 19px"><b>范围选择:</b> &nbsp;&nbsp;</span>
+            <select style="float: right; display: inline-block; margin-right: 32px" ng-model="selectedOption"
+                    ng-change="changeScope(selectedOption)" ng-options="x for (x,y) in options">
+            </select>
+        </div>
+        <div class="row" style="margin: auto; padding-right: 20px;">
+            <table id="myTable" class="table table-striped" style="margin: 0 0px 10px 10px">
+                <thead>
+                <tr>
+                    <th>出口收费站名称(路段名+收费站名)</th>
+                    <th>收费员确认并处置的逃费次数(单位:次)</th>
+                    <th>挽回的逃费损失(单位:元)</th>
+                    <th>系统报警处置率(单位:%)</th>
+                </tr>
+                </thead>
+                <!--<tbody>-->
+                <!--<tr ng-repeat="row in rows" on-finish-render-filters>-->
+                <!--<td>{{row.station}}</td>-->
+                <!--<td>{{row.action1}}次</td>-->
+                <!--<td>{{row.saveMoney}}元</td>-->
+                <!--<td>-->
+                <!--<span>{{row.rate}}%</span>-->
+                <!--</td>-->
+                <!--</tr>-->
+                <!--</tbody>-->
+
+            </table>
+        </div>
+    </div>
+
+    <!--分收费员数据区域-->
+    <div class="row" style="margin: auto;">
+        <div class="row">
+            <h4 style="float: left; margin-left: 20px; display: inline-block">分收费员考核区域</h4>
+        </div>
+        <div class="row" style="text-align: right; margin-bottom: 10px">
+            <span style="height: 19px; line-height: 19px"><b>范围选择:</b> &nbsp;&nbsp;</span>
+            <select style="float: right; display: inline-block; margin-right: 32px" ng-model="operatorsSelectedOption"
+                    ng-change="operatorsChangeScope(operatorsSelectedOption)"
+                    ng-options="x for (x,y) in operatorsOptions">
+            </select>
+        </div>
+        <div class="row" style="margin: auto; padding-right: 20px;">
+            <table id="operatorsTable" class="table table-striped" style="margin: 0 0px 10px 10px">
+                <thead>
+                <tr>
+                    <th>收费员工号</th>
+                    <th>出口收费站名称(路段名+收费站名)</th>
+                    <th>收费员确认并处置的逃费次数(单位:次)</th>
+                    <th>挽回的逃费损失(单位:元)</th>
+                    <th>系统报警处置率(单位:%)</th>
+                </tr>
+                </thead>
+                <!--<tbody>-->
+                <!--<tr ng-repeat="row in rows" on-finish-render-filters>-->
+                <!--<td>{{row.station}}</td>-->
+                <!--<td>{{row.action1}}次</td>-->
+                <!--<td>{{row.saveMoney}}元</td>-->
+                <!--<td>-->
+                <!--<span>{{row.rate}}%</span>-->
+                <!--</td>-->
+                <!--</tr>-->
+                <!--</tbody>-->
+
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="js/dodge-toll-audit-owner.js"></script>
+<script type="text/javascript" src="js/baseUrl.js"></script>
+
+</html>
